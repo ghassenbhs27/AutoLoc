@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,4 +24,10 @@ public class Contrat {
     private LocalDate dateSignature;
     private Double montantTotal;
     private Boolean valide;
+
+    @OneToMany(mappedBy = "contrat", fetch = FetchType.LAZY)
+    private List<Paiement> paiements = new ArrayList<>();
+
+    @OneToOne(mappedBy = "contrat", fetch = FetchType.LAZY)
+    private Reservation reservation;
 }

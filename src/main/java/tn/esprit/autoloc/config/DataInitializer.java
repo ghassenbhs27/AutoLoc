@@ -14,9 +14,26 @@ public class DataInitializer {
     public CommandLineRunner initData(VehiculeRepository vehiculeRepository) {
         return args -> {
             if (vehiculeRepository.count() == 0) {
-                Vehicule v1 = new Vehicule(null, "Renault", "Clio", "123 TU 4567", 2022, StatutVehicule.DISPONIBLE);
-                Vehicule v2 = new Vehicule(null, "Peugeot", "208", "789 TU 1234", 2023, StatutVehicule.DISPONIBLE);
-                Vehicule v3 = new Vehicule(null, "Volkswagen", "Golf", "456 TU 7890", 2021, StatutVehicule.LOUE);
+                Vehicule v1 = new Vehicule();
+                v1.setMarque("Renault");
+                v1.setModele("Clio");
+                v1.setImmatriculation("123 TU 4567");
+                v1.setAnnee(2022);
+                v1.setStatut(StatutVehicule.DISPONIBLE);
+
+                Vehicule v2 = new Vehicule();
+                v2.setMarque("Peugeot");
+                v2.setModele("208");
+                v2.setImmatriculation("789 TU 1234");
+                v2.setAnnee(2023);
+                v2.setStatut(StatutVehicule.DISPONIBLE);
+
+                Vehicule v3 = new Vehicule();
+                v3.setMarque("Volkswagen");
+                v3.setModele("Golf");
+                v3.setImmatriculation("456 TU 7890");
+                v3.setAnnee(2021);
+                v3.setStatut(StatutVehicule.LOUE);
 
                 vehiculeRepository.save(v1);
                 vehiculeRepository.save(v2);
