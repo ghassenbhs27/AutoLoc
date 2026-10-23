@@ -1,9 +1,9 @@
-package tn.esprit.autoloc.repository;
+package tn.esprit.autoloc.domain.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.autoloc.domain.Contrat;
-import tn.esprit.autoloc.domain.service.IContratService;
+import tn.esprit.autoloc.repository.ContratRepository;
 
 import java.util.List;
 

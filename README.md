@@ -1,67 +1,119 @@
-# AutoLoc — Acteurs et cas d'utilisation (Séance 1)
+# AutoLoc
 
-## 1. Contexte
+AutoLoc is a Spring Boot REST API for managing a vehicle rental business across agencies. The current project includes persistence models, repositories, service classes, and CRUD endpoints for the main rental operations.
 
-**AutoLoc** est une application de gestion de location de véhicules entre agences.
-Ce document présente la première identification des **acteurs** et des **cas d'utilisation** réalisée lors de la Séance 1.
+## Current features
 
----
+- Manage vehicles and their agency, equipment, maintenance, and reservation relationships.
+- Manage agencies, employees, clients, reservations, contracts, payments, equipment, and maintenance records.
+- Create, list, retrieve, update, and delete records through REST endpoints.
+- Initialize three example vehicles on startup when the vehicle table is empty.
+- Expose generated API documentation through Springdoc OpenAPI.
 
-## 2. Acteurs identifiés
+Authentication, authorization, a client-facing interface, and complete rental workflows are not present in the current codebase.
 
-| Acteur | Description | Type |
-|---|---|---|
-| **Client** | Personne souhaitant louer un véhicule auprès d'une agence. | Acteur principal |
-| **Agent d'agence** | Employé chargé de gérer les locations, les véhicules et les clients au quotidien dans son agence. | Acteur principal |
-| **Responsable d'agence** | Responsable supervisant l'activité d'une agence (véhicules, agents, statistiques). | Acteur principal |
-| **Administrateur** | Gestionnaire de l'application : comptes, rôles, paramétrage global. | Acteur principal |
+## Technology
 
----
+- Java 17
+- Spring Boot 4.1.0
+- Spring Web MVC
+- Spring Data JPA / Hibernate
+- MySQL Connector/J
+- Lombok
+- Springdoc OpenAPI UI
+- Maven Wrapper
 
-## 3. Cas d'utilisation par acteur
+## Requirements
 
-### 3.1 Client
+- JDK 17 or newer
+- MySQL server
+- Maven is optional; the included Maven Wrapper can be used instead
 
-- Consulter le catalogue des véhicules disponibles
-- Rechercher un véhicule (par catégorie, agence, dates)
-- Créer un compte / s'authentifier
-- Effectuer une réservation
-- Modifier ou annuler une réservation
-- Consulter l'historique de ses locations
-- Consulter / imprimer sa facture
+## Configuration
 
-### 3.2 Agent d'agence
+The default configuration is in `src/main/resources/application.properties` and activates the `dev` profile. By default, the application connects to:
 
-- S'authentifier
-- Gérer les véhicules de son agence (ajout, modification, disponibilité)
-- Enregistrer une location (départ du véhicule)
-- Enregistrer le retour d'un véhicule
-- Gérer les clients de son agence
-- Consulter et imprimer les factures
-- Consulter le planning des réservations
+```text
+URL:      jdbc:mysql://127.0.0.1:3306/autoloc?createDatabaseIfNotExist=true
+Username: root
+Password: (empty)
+Port:     8081
+```
 
-### 3.3 Responsable d'agence
+Update `spring.datasource.url`, `spring.datasource.username`, and `spring.datasource.password` for your local MySQL setup. Hibernate is configured with `spring.jpa.hibernate.ddl-auto=update`; use an appropriately managed schema configuration for deployments.
 
-- S'authentifier
-- Gérer les agents de son agence (création, affectation)
-- Superviser les véhicules de son agence
-- Consulter les statistiques d'activité (locations, revenus, taux d'occupation)
-- Valider ou refuser des opérations sensibles (remises, annulations)
-- Consulter les rapports de son agence
+## Run the application
 
-### 3.4 Administrateur
+On Windows:
 
-- S'authentifier
-- Gérer les comptes utilisateurs (création, désactivation, rôles)
-- Gérer les agences
-- Gérer les catégories de véhicules et les tarifs
-- Paramétrer l'application (règles, options globales)
-- Consulter les journaux / audits
-- Effectuer des sauvegardes / restaurations
+```powershell
+.\mvnw.cmd spring-boot:run
+```
 
----
+On macOS or Linux:
 
-## 4. Remarques
+```bash
+./mvnw spring-boot:run
+```
 
-- Cette liste est **préliminaire** : elle sera affinée lors des séances suivantes (ajout possible d'acteurs secondaires tels qu'un **système de paiement** ou un **service de maintenance**).
-- Les cas d'utilisation seront détaillés (description, préconditions, scénario nominal, exceptions) dans les diagrammes et fiches descriptives à venir.
+The API will be available at `http://localhost:8081`.
+
+## REST endpoints
+
+Each resource currently supports the standard CRUD operations:
+
+| Resource | Base path |
+|---|---|
+| Vehicles | `/api/vehicules` |
+| Agencies | `/api/agences` |
+| Clients | `/api/clients` |
+| Employees | `/api/employes` |
+| Reservations | `/api/reservations` |
+| Contracts | `/api/contrats` |
+| Payments | `/api/paiements` |
+| Equipment | `/api/equipements` |
+| Maintenance | `/api/maintenances` |
+
+For each base path, `GET` lists records, `GET /{id}` retrieves one record, `POST` creates a record, `PUT /{id}` updates it, and `DELETE /{id}` removes it. Request and response bodies use JSON. For example:
+
+```text
+GET    http://localhost:8081/api/vehicules
+GET    http://localhost:8081/api/vehicules/1
+POST   http://localhost:8081/api/vehicules
+PUT    http://localhost:8081/api/vehicules/1
+DELETE http://localhost:8081/api/vehicules/1
+```
+
+The controllers return `404 Not Found` when an item is requested, updated, or deleted by an unknown ID; successful deletes return `204 No Content`.
+
+## API documentation
+
+Springdoc OpenAPI UI is included. When the application is running, try:
+
+```text
+http://localhost:8081/swagger-ui/index.html
+```
+
+The OpenAPI document is typically available at `/v3/api-docs`.
+
+## Project layout
+
+```text
+src/main/java/tn/esprit/autoloc/
+├── config/       Startup data initialization
+├── controller/   REST endpoints
+├── domain/       JPA entities, enums, and service classes
+├── repository/   Spring Data repositories
+└── AutolocApplication.java
+src/main/resources/
+└── application*.properties
+src/test/java/    Application context test
+```
+
+## Build
+
+```powershell
+.\mvnw.cmd package
+```
+
+The project contains a Spring Boot context-load test under `src/test/java`. Run the test suite with `./mvnw test` (or `mvnw.cmd test` on Windows); the application requires a reachable, configured MySQL database when its persistence context starts.

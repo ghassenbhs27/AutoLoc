@@ -1,9 +1,9 @@
-package tn.esprit.autoloc.repository;
+package tn.esprit.autoloc.domain.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.autoloc.domain.Paiement;
-import tn.esprit.autoloc.domain.service.IPaiementService;
+import tn.esprit.autoloc.repository.PaiementRepository;
 
 import java.util.List;
 
