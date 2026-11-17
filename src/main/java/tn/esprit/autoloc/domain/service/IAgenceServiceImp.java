@@ -1,6 +1,8 @@
 package tn.esprit.autoloc.domain.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.autoloc.domain.Agence;
@@ -9,12 +11,21 @@ import tn.esprit.autoloc.repository.AgenceRepository;
 import tn.esprit.autoloc.repository.VehiculeRepository;
 
 import java.util.List;
+import java.time.LocalDateTime;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class IAgenceServiceImp implements IAgenceService {
     private final AgenceRepository agenceRepository;
     private final VehiculeRepository vehiculeRepository;
+
+    @Scheduled(fixedDelay = 120000)
+    public void suivreNombreAgences() {
+        List<Agence> agences = agenceRepository.findAll();
+        log.info("Vérification des agences à {} — nombre total : {}",
+                LocalDateTime.now(), agences.size());
+    }
 
     @Override
     public Agence ajouterAgence(Agence agence) {

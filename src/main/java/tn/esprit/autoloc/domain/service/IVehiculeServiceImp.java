@@ -1,6 +1,8 @@
 package tn.esprit.autoloc.domain.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.autoloc.domain.Equipement;
@@ -9,12 +11,28 @@ import tn.esprit.autoloc.repository.EquipementRepository;
 import tn.esprit.autoloc.repository.VehiculeRepository;
 
 import java.util.List;
+import java.time.LocalDateTime;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class IVehiculeServiceImp implements IVehiculeService {
     private final VehiculeRepository vehiculeRepository;
     private final EquipementRepository equipementRepository;
+
+    @Scheduled(initialDelay = 5000, fixedRate = 60000)
+    public void actualiserEtatVehicules() {
+        List<Vehicule> vehicules = vehiculeRepository.findAll();
+        log.info("Actualisation des véhicules à {} — nombre total : {}",
+                LocalDateTime.now(), vehicules.size());
+    }
+
+    @Scheduled(cron = "0 0 9 * * MON")
+    public void genererRapportVehicules() {
+        List<Vehicule> vehicules = vehiculeRepository.findAll();
+        log.info("Rapport des véhicules généré le {} — nombre total de véhicules : {}",
+                LocalDateTime.now(), vehicules.size());
+    }
 
     @Override
     public Vehicule ajouterVehicule(Vehicule vehicule) {
